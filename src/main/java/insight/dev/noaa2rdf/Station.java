@@ -1,9 +1,10 @@
 package insight.dev.noaa2rdf;
 
-import org.apache.jena.datatypes.xsd.XSDDatatype;
+import insight.dev.noaa2rdf.vocabulary.Geo;
+import insight.dev.noaa2rdf.vocabulary.Namespace;
+import insight.dev.noaa2rdf.vocabulary.SOSA;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.RDF;
-import org.apache.jena.vocabulary.RDFS;
 
 import java.io.PrintStream;
 
@@ -19,14 +20,17 @@ import java.io.PrintStream;
  * Date:  09/06/18.
  */
 public class Station {
-  private final String stationNameSpace = "http://insight.org/sample/noaa/station/";
+
 
   private Resource stationResource;
-  private Resource temSensor;
-  private Resource windSensor;
-  private Resource windDirectionSensor;
-  private Resource atmPressureSensor;
-  private Resource atmVisibilitySensor;
+
+
+
+//  private Resource temSensor;
+//  private Resource windSensor;
+//  private Resource windDirectionSensor;
+//  private Resource atmPressureSensor;
+//  private Resource atmVisibilitySensor;
 
   private String stationName;
   private String stationId;
@@ -34,26 +38,53 @@ public class Station {
   private String lat;
   private String lon;
 
-  public Station(){}
+
+  private Sensor windSpeedSensor;
+  private Sensor windDirectionSensor;
+  private Sensor temperatureSensor;
+  private Sensor airConditionSensor;
+  private Sensor atmosphereSensor;
+
+  private Location location;
+
+  public Station(){
+    location  = new Location();
+    windSpeedSensor = new Sensor(this, Sensor.SensorType.WINDSPEEDSENSOR);
+    windDirectionSensor = new Sensor(this, Sensor.SensorType.WINDDIRECTIONSENSOR);
+    temperatureSensor = new Sensor(this, Sensor.SensorType.TEMPERATURESENSOR);
+    airConditionSensor = new Sensor(this, Sensor.SensorType.AIRCONDITIONSENSOR);
+    atmosphereSensor = new Sensor(this, Sensor.SensorType.ATMOSHPERESENSOR);
+  }
+
 
   public void setStationId(String stationId){
     this.stationId = stationId;
+    location.setLocationId(stationId);
+  }
+
+  public String getStationId(){
+    return stationId;
   }
 
   public void setStationName(String stationName){
-    this.stationName = stationName;
+    location.setName(stationName);
   }
 
+  public Location getLocation(){
+    return this.location;
+  }
+
+
   public void setCountryCode(String countryCode){
-    this.countryCode = countryCode;
+    location.setCountryCode(countryCode);
   }
 
   public void setLat(String lat){
-    this.lat = lat;
+    location.setLat(lat);
   }
 
   public void setLon(String lon){
-    this.lon = lon;
+    location.setLon(lon);
   }
 
   public Resource getStationResource(){
@@ -61,169 +92,57 @@ public class Station {
   }
 
   private Resource createStationResource(){
-    this.stationResource =  ResourceFactory.createResource(stationNameSpace + this.stationId + "/");
+    this.stationResource =  ResourceFactory.createResource(Namespace.iot_station + this.stationId + "/");
     return this.stationResource;
   }
 
 
-  public Resource getTemSensorResource() {
-    return temSensor != null ? temSensor : createTemperatureSensor();
-  }
+  private Model createModel(Model model){
+    model.add(getStationResource(), RDF.type, SOSA.Platform);
 
-  private Resource createTemperatureSensor(){
-    this.temSensor = ResourceFactory.createResource(stationNameSpace + this.stationId + "/temperatureSensor/");
-    return this.temSensor;
-  }
+    model.add(getStationResource(), Geo.hasLocation, location.getLocationResouce());
+    model = location.addToModel(model);
 
-  public Resource getWindSensorResource() {
-    return windSensor != null ? windSensor : createWindSensorResource();
-  }
+    //add temperature Sensor
 
-  public Resource createWindSensorResource(){
-    this.windSensor =  ResourceFactory.createResource(stationNameSpace + this.stationId + "/windSensor/");
-    return this.windSensor;
-  }
+    //add windSpeedSensor
+    model.add(getStationResource(), SOSA.hosts, windSpeedSensor.getSensorResource());
+    model.add(windSpeedSensor.getSensorResource(), SOSA.isHostedBy, getStationResource());
+    model = windSpeedSensor.addToModel(model);
 
-  public Resource getWindDirectionSensorResource() {
-    return windDirectionSensor != null ? windDirectionSensor : createWindDirectionSensor();
-  }
+    //add windSpeedSensor
+    model.add(getStationResource(), SOSA.hosts, windDirectionSensor.getSensorResource());
+    model.add(windDirectionSensor.getSensorResource(), SOSA.isHostedBy, getStationResource());
+    model = windDirectionSensor.addToModel(model);
 
-  private Resource createWindDirectionSensor(){
-    this.windDirectionSensor =  ResourceFactory.createResource(stationNameSpace + this.stationId + "/windDirectionSensor/");
-    return this.windDirectionSensor;
-  }
+    //add temperature
+    model.add(getStationResource(), SOSA.hosts, temperatureSensor.getSensorResource());
+    model.add(temperatureSensor.getSensorResource(), SOSA.isHostedBy, getStationResource());
+    model = temperatureSensor.addToModel(model);
 
-  public Resource getATMPressureSensor() {
-    return atmPressureSensor != null ? atmPressureSensor : createATMPressureSensor();
-  }
+    //add windSpeedSensor
+    model.add(getStationResource(), SOSA.hosts, airConditionSensor.getSensorResource());
+    model.add(airConditionSensor.getSensorResource(), SOSA.isHostedBy, getStationResource());
+    model = airConditionSensor.addToModel(model);
 
-  public Resource createATMPressureSensor(){
-    this.atmPressureSensor = ResourceFactory.createResource(stationNameSpace + this.stationId + "/atmosphericPressureSenor/");
-    return this.atmPressureSensor;
-  }
-
-  public Resource getATMPVisibleSensor() {
-    return atmVisibilitySensor != null ? atmVisibilitySensor : createATMPVisibleSensor();
-  }
-
-  private Resource createATMPVisibleSensor(){
-    this.atmVisibilitySensor = ResourceFactory.createResource(stationNameSpace + this.stationId + "/atmosphereVisibilitySensor/");
-    return this.atmVisibilitySensor;
-  }
-
-  private Model addTemperatureSensor(Model model){
-    model.add(getStationResource(), SSN.hasSubSystem, getTemSensorResource());
-    model.add(getTemSensorResource(), RDF.type, SOSA.Sensor);
-    model.add(getTemSensorResource(), RDFS.label, "Temperature Sensor");
-    model.add(getTemSensorResource(), SOSA.observes,  SOSA.tempObservableProperty);
-    model.add(SOSA.tempObservableProperty, RDF.type, SOSA.ObservableProperty);
-    model.add(SOSA.tempObservableProperty, RDFS.label, "Temperature");
-    model.add(SOSA.tempObservableProperty, SOSA.isObservedBy,getTemSensorResource());
-    return model;
-  }
-
-  private Model addWindSensor(Model model){
-    model.add(getStationResource(), SSN.hasSubSystem, getWindSensorResource());
-    model.add(getWindSensorResource(), RDF.type, SOSA.Sensor);
-    model.add(getWindSensorResource(), RDFS.label, "Wind Speed Sensor");
-    model.add(getWindSensorResource(), SOSA.observes, SOSA.windObservableProperty);
-    model.add(SOSA.windObservableProperty, RDF.type, SOSA.ObservableProperty);
-    model.add(SOSA.windObservableProperty, RDFS.label, "Wind");
-    model.add(SOSA.windObservableProperty, SOSA.isObservedBy, getWindSensorResource());
-    return model;
-  }
-
-  private Model addWindDirectionSensor(Model model){
-    model.add(getStationResource(), SSN.hasSubSystem, getWindDirectionSensorResource());
-    model.add(getWindDirectionSensorResource(), RDF.type, SOSA.Sensor);
-    model.add(getWindDirectionSensorResource(), RDFS.label, "Wind Direction Sensor");
-    model.add(getWindSensorResource(), SOSA.observes, SOSA.windDirectionObservableProperty);
-    model.add(SOSA.windDirectionObservableProperty, RDF.type, SOSA.ObservableProperty);
-    model.add(SOSA.windDirectionObservableProperty, RDFS.label, "Wind Direction");
-    model.add(SOSA.windDirectionObservableProperty, SOSA.isObservedBy, getWindDirectionSensorResource());
-    return model;
-  }
-
-  private Model addATMPressureSensor(Model model){
-    model.add(getStationResource(), SSN.hasSubSystem, getATMPressureSensor());
-    model.add(getATMPressureSensor(), RDF.type, SOSA.Sensor);
-    model.add(getATMPressureSensor(), RDFS.label, "Atmosphere Pressure Sensor");
-    model.add(getATMPressureSensor(), SOSA.observes, SOSA.amtPressureObservableProperty);
-    model.add(SOSA.amtPressureObservableProperty, RDF.type, SOSA.ObservableProperty);
-    model.add(SOSA.amtPressureObservableProperty, RDFS.label, " Pressure ");
-    model.add(SOSA.amtPressureObservableProperty, SOSA.isObservedBy, getATMPressureSensor());
-    return model;
-  }
-
-  private Model addATMVisibilitySensor(Model model){
-    model.add(getStationResource(), SSN.hasSubSystem, getATMPVisibleSensor());
-    model.add(getATMPVisibleSensor(), RDF.type, SOSA.Sensor);
-    model.add(getATMPVisibleSensor(), RDFS.label, "Atmosphere Visibility Sensor");
-    model.add(getATMPVisibleSensor(), SOSA.observes, SOSA.amtVisibilityObservableProperty);
-    model.add(SOSA.amtVisibilityObservableProperty, RDF.type, SOSA.ObservableProperty);
-    model.add(SOSA.amtVisibilityObservableProperty, RDFS.label, " Visibility ");
-    model.add(SOSA.amtVisibilityObservableProperty, SOSA.isObservedBy, getATMPVisibleSensor());
-    return model;
-  }
-
-  private Model addStation(Model model){
-    model.add(getStationResource(), RDF.type, SSN.System);
-    return model;
-  }
-
-  private Model addPlace(Model model){
-    Resource place = ResourceFactory.createResource(stationNameSpace + stationId + "/place");
-    Property name  = ResourceFactory.createProperty("http://purl.org/goodrelations/v1#name");
-    Property hasLocation = ResourceFactory.createProperty("http://www.loa-cnr.it/ontologies/DUL.owl#hasLocation");
-
-    model.add(place, RDF.type, GEO.Feature);
-
-    if (lat!=null){
-      model.add(place, GEO.lat, ResourceFactory.createTypedLiteral(lat, XSDDatatype.XSDdouble));
-    }
-
-    if (lon!=null){
-      model.add(place, GEO.lon, ResourceFactory.createTypedLiteral(lon, XSDDatatype.XSDdouble));
-    }
-
-    if (countryCode != null){
-      model.add(place, GEO.countryCode, countryCode);
-    }
-
-    model.add(getTemSensorResource(), hasLocation, place);
-    model.add(getWindSensorResource(), hasLocation, place);
-    model.add(getWindDirectionSensorResource(), hasLocation, place);
-    model.add(getATMPressureSensor(), hasLocation, place);
-    model.add(getATMPVisibleSensor(), hasLocation, place);
-
-    if (stationName != null){
-      model.add(getStationResource(), name, stationName);
-    }
+    //add windSpeedSensor
+    model.add(getStationResource(), SOSA.hosts, atmosphereSensor.getSensorResource());
+    model.add(atmosphereSensor.getSensorResource(), SOSA.isHostedBy, getStationResource());
+    model = atmosphereSensor.addToModel(model);
 
     return model;
   }
+
 
   public void viewStationInRDF(){
     Model model = ModelFactory.createDefaultModel();
-          model = addStation(model);
-          model = addTemperatureSensor(model);
-          model = addWindSensor(model);
-          model = addWindDirectionSensor(model);
-          model = addATMPressureSensor(model);
-          model = addATMVisibilitySensor(model);
-          model = addPlace(model);
-          model.write(System.out, "N-Triples");
+          model = createModel(model);
+          model.write(System.out, "N3");
   }
 
   private Model addToModel(){
     Model model = ModelFactory.createDefaultModel();
-    model = addStation(model);
-    model = addTemperatureSensor(model);
-    model = addWindSensor(model);
-    model = addWindDirectionSensor(model);
-    model = addATMPressureSensor(model);
-    model = addATMVisibilitySensor(model);
-    model = addPlace(model);
+    model = createModel(model);
     return model;
   }
 
@@ -240,5 +159,16 @@ public class Station {
 
   public String toString(){
     return stationId + " " + stationName + " " + countryCode + " " + lat + " " + lon;
+  }
+
+
+  public static void main(String[] args){
+    Station station = new Station();
+            station.setStationId("0000001");
+            station.setStationName("ABC");
+            station.setLon("1");
+            station.setLat("1");
+            station.setCountryCode("aaa");
+            station.viewStationInRDF();
   }
 }

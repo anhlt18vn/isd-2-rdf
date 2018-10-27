@@ -1,4 +1,4 @@
-package insight.dev.noaa2rdf;
+package insight.dev.noaa2rdf.vocabulary;
 
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
@@ -18,12 +18,9 @@ import org.apache.jena.rdf.model.ResourceFactory;
  */
 public class SSN {
 
-//  private static Model model = ModelFactory.createDefaultModel();
 
-  public static String nameSpace = "http://www.w3.org/ns/ssn/";
-
-  public static Resource System = ResourceFactory.createResource(nameSpace + "System");
-  public static Property hasSubSystem = ResourceFactory.createProperty(nameSpace + "hashSubSystem");
+  public static Resource System = ResourceFactory.createResource(Namespace.ssn + "System");
+  public static Property hasSubSystem = ResourceFactory.createProperty(Namespace.ssn + "hashSubSystem");
 
 //  public static Resource System = nameSpace + "System";
 //  public static String Deployment = nameSpace + "Deployment";
@@ -34,7 +31,7 @@ public class SSN {
 //  public static String wasOriginatedBy = nameSpace + "wasOriginatedBy";
 //  public static String detects = nameSpace + "detects";
 //  public static String Property = nameSpace + "Property";
-//  public static String hasProperty = nameSpace + "hasProperty";
+  public static Property hasProperty = ResourceFactory.createProperty(Namespace.ssn + "hasProperty");
 //  public static String isPropertyOf = nameSpace + "isPropertyOf";
 //  public static String forProperty = nameSpace + "forProperty";
 

@@ -23,12 +23,11 @@ public class Station2RDF
 
     try
     {
-      Reader in = new FileReader("/home/anhlt185/Desktop/isd-history.csv");
+      Reader in = new FileReader("/home/anhlt185/isd-history.csv");
 
       Iterable<CSVRecord> csvRecords = CSVFormat.EXCEL.parse(in);
 
       int i = 0;
-
 
       for (CSVRecord csvRecord:csvRecords){
         if (i == 0) {
@@ -61,6 +60,9 @@ public class Station2RDF
         station.viewStationInRDF();
 
         System.out.println(i);
+
+        break;
+
       }
     } catch (IOException e){
 
