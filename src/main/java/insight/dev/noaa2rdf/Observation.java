@@ -1,352 +1,246 @@
-//package insight.dev.noaa2rdf;
-//
-//import org.apache.jena.datatypes.RDFDatatype;
-//import org.apache.jena.datatypes.xsd.XSDDatatype;
-//import org.apache.jena.graph.Node;
-//import org.apache.jena.rdf.model.*;
-//
-//import java.io.PrintStream;
-//import java.time.LocalDateTime;
-//
-///**
-// * insight.dev.noaa2rdf
-// * <p>
-// * TODO: Add class description
-// * <p>
-// * Author:  Anh Le-Tuan
-// * <p>
-// * Email:   anh.letuan@insight-centre.org
-// * <p>
-// * Date:  07/06/18.
-// */
-//public class Observation {
-//
-//
-//
-//  private String wndDirectAngle;
-//  private String wndDirectAngleQC;
-//  private String wndDirectAngleTC;
-//  private String wndSpeed;
-//  private String wndSpeedQC;
-//
-//  private String visDistance;
-//  private String visQC;
-//  private String visVC;
-//  private String visQVC;
-//
-//  private String cigCHD;
-//  private String cigCQC;
-//  private String cigCDC;
-//  private String cigCAVOK;
-//
-//  private String temp;
-//  private String tempQ;
-//
-//  private String tempDew;
-//  private String tempDewQ;
-//
-//  private String pressure;
-//  private String pressureQ;
-//
-//  private String stationId;
-//  private String dateTime;
-//  private String reportType;
-//  private int observationId;
-//
-//  private Station station;
-//
-//  public Observation(){
-//    station = new Station();
-//  }
-//
-//  public void setObservationId(int observationId){
-//    this.observationId = observationId;
-//  }
-//
-//  public void setStationId(String stationId){
-//    this.stationId = stationId;
-//    station.setStationId(stationId);
-//  }
-//
-//  public void setDateTime(String dateTime){
-//    this.dateTime = dateTime;
-//  }
-//
-//  public void setReportType(String reportType){
-//    this.reportType = reportType;
-//  }
-//
-//  public void setWND(String WND){
-//    String[] wnd = WND.split(",");
-//
-//     wndDirectAngle     = wnd[0];
-//     wndDirectAngleQC   = wnd[1];
-//     wndDirectAngleTC   = wnd[2];
-//     wndSpeed           = wnd[3];
-//     wndSpeedQC         = wnd[4];
-//  }
-//
-//  public void setCIG(String CIG){
-//    String[] cig = CIG.split(",");
-//    cigCHD       = cig[0];
-//    cigCQC       = cig[1];
-//    cigCDC       = cig[2];
-//    cigCAVOK     = cig[3];
-//  }
-//
-//  public void setVIS(String VIS){
-//    String[] vis = VIS.split(",");
-//    visDistance  = vis[0];
-//    visQC        = vis[1];
-//    visVC        = vis[2];
-//    visQVC       = vis[3];
-//  }
-//
-//  public void setTMP(String TMP){
-//    String[] tmp = TMP.split(",");
-//    temp = tmp[0];
-//    tempQ = tmp[1];
-//  }
-//
-//
-//  public void setDEW(String DEW){
-//    String[] dew = DEW.split(",");
-//    tempDew = dew[0];
-//    tempDewQ = dew[1];
-//  }
-//
-//  public void setSPL(String SPL){
-//    String[] spl = SPL.split(",");
-//    pressure = spl[0];
-//    pressureQ = spl[1];
-//  }
-//
-//  //================Wind Direction================================================================================================================//
-//  private Model createWndDirectAngle(Model model){
-//    if (wndDirectAngle.equals("999")) return model;
-//    Resource windObservation = ResourceFactory.createResource(observationNamespace + stationId + "/" + observationId + "/WindDirectAngle/");
-//    model.add(windObservation, SOSA.madeBySensor, station.getWindDirectionSensorResource());
-//    model.add(station.getWindDirectionSensorResource(), SOSA.madeObservation, windObservation);
-//    model.add(windObservation, SOSA.resultTime, ResourceFactory.createTypedLiteral(dateTime, XSDDatatype.XSDdateTime));
-//    model.add(windObservation, SOSA.hasSimpleResult, ResourceFactory.createPlainLiteral(wndDirectAngle));
-//    model = SOSA.addWDNDirectAngleFOI(model, windObservation);
-//    return model;
-//  }
-//
-//  private Model createWndDirectAngleQC(Model model){
-//    if (wndDirectAngleQC.equals("9")) return model;
-//    Resource windObservation = ResourceFactory.createResource(observationNamespace + stationId + "/" + observationId + "/WindDirectAngleQC/");
-//    model.add(windObservation, SOSA.madeBySensor, station.getWindDirectionSensorResource());
-//    model.add(station.getWindDirectionSensorResource(), SOSA.madeObservation, windObservation);
-//    model.add(windObservation, SOSA.resultTime, ResourceFactory.createTypedLiteral(dateTime, XSDDatatype.XSDdateTime));
-//    model.add(windObservation, SOSA.hasSimpleResult, ResourceFactory.createPlainLiteral(wndDirectAngleQC));
-//    model = SOSA.addWDNDirectAngleQCFOI(model, windObservation);
-//    return model;
-//  }
-//
-//  private Model createWndDirectAngleTC(Model model){
-//    if (wndDirectAngleTC.equals("9")) return model;
-//    Resource windObservation = ResourceFactory.createResource(observationNamespace + stationId + "/" + observationId + "/WindDirectAngleTC/");
-//    model.add(windObservation, SOSA.madeBySensor, station.getWindDirectionSensorResource());
-//    model.add(station.getWindDirectionSensorResource(), SOSA.madeObservation, windObservation);
-//    model.add(windObservation, SOSA.resultTime, ResourceFactory.createTypedLiteral(dateTime, XSDDatatype.XSDdateTime));
-//    model.add(windObservation, SOSA.hasSimpleResult, ResourceFactory.createPlainLiteral(wndDirectAngleTC));
-//    model = SOSA.addWDNDirectAngleTCFOI(model, windObservation);
-//    return model;
-//  }
-//
-//  //================Wind Speed================================================================================================================//
-//  private Model createWndSpeedRate(Model model){
-//    if (wndSpeed.equals("9999")) return model;
-//    Resource windObservation = ResourceFactory.createResource(observationNamespace + stationId + "/" + observationId + "/WindSpeedRate/");
-//    model.add(windObservation, SOSA.madeBySensor, station.getWindSensorResource());
-//    model.add(station.getWindSensorResource(), SOSA.madeObservation, windObservation);
-//    model.add(windObservation, SOSA.resultTime, ResourceFactory.createTypedLiteral(dateTime, XSDDatatype.XSDdateTime));
-//    model.add(windObservation, SOSA.hasSimpleResult, ResourceFactory.createPlainLiteral(wndSpeed));
-//    model = SOSA.addWNDRateSpeedFOI(model, windObservation);
-//    return model;
-//  }
-//
-//  private Model createWndSpeedRateQC(Model model){
-//    if (wndDirectAngleTC.equals("9999")) return model;
-//    Resource windObservation = ResourceFactory.createResource(observationNamespace + stationId + "/" + observationId + "/WindSpeedRateQC/");
-//    model.add(windObservation, SOSA.madeBySensor, station.getWindSensorResource());
-//    model.add(station.getWindSensorResource(), SOSA.madeObservation, windObservation);
-//    model.add(windObservation, SOSA.resultTime, ResourceFactory.createTypedLiteral(dateTime, XSDDatatype.XSDdateTime));
-//    model.add(windObservation, SOSA.hasSimpleResult, ResourceFactory.createPlainLiteral(wndDirectAngleTC));
-//    model = SOSA.addWNDRateQCFOI(model, windObservation);
-//    return model;
-//  }
-//
-//  //================VIS ================================================================================================================//
-//
-//  private Model createVISDistance(Model model){
-//    if (visDistance.equals("999999")) return model;
-//    Resource visObservation = ResourceFactory.createResource(observationNamespace + stationId + "/" + observationId + "/VISDistance/");
-//    model.add(visObservation, SOSA.madeBySensor, station.getATMPVisibleSensor());
-//    model.add(station.getATMPVisibleSensor(), SOSA.madeObservation, visObservation);
-//    model.add(visObservation, SOSA.resultTime, ResourceFactory.createTypedLiteral(dateTime, XSDDatatype.XSDdateTime));
-//    model.add(visObservation, SOSA.hasSimpleResult, ResourceFactory.createPlainLiteral(visDistance));
-//    model = SOSA.addVISDistanceFOI(model, visObservation);
-//    return model;
-//  }
-//
-//  private Model createVISDistanceQC(Model model){
-//    if (visQC.equals("9")) return model;
-//    Resource visObservationQC = ResourceFactory.createResource(observationNamespace + stationId + "/" + observationId + "/VISDistanceQC/");
-//    model.add(visObservationQC, SOSA.madeBySensor, station.getATMPVisibleSensor());
-//    model.add(station.getATMPVisibleSensor(), SOSA.madeObservation, visObservationQC);
-//    model.add(visObservationQC, SOSA.resultTime, ResourceFactory.createTypedLiteral(dateTime, XSDDatatype.XSDdateTime));
-//    model.add(visObservationQC, SOSA.hasSimpleResult, ResourceFactory.createPlainLiteral(visQC));
-//    model = SOSA.addVISQCFOI(model, visObservationQC);
-//    return model;
-//  }
-//
-//  private Model createVISDistanceVC(Model model){
-//    if (visVC.equals("9")) return model;
-//    Resource visObservationVC = ResourceFactory.createResource(observationNamespace + stationId + "/" + observationId + "/VISDistanceVC/");
-//    model.add(visObservationVC, SOSA.madeBySensor, station.getATMPVisibleSensor());
-//    model.add(station.getATMPVisibleSensor(), SOSA.madeObservation, visObservationVC);
-//    model.add(visObservationVC, SOSA.resultTime, ResourceFactory.createTypedLiteral(dateTime, XSDDatatype.XSDdateTime));
-//    model.add(visObservationVC, SOSA.hasSimpleResult, ResourceFactory.createPlainLiteral(visVC));
-//    model = SOSA.addVISVCFOI(model, visObservationVC);
-//    return model;
-//  }
-//
-//  private Model createVISDistanceQVC(Model model){
-//    if (visQVC.equals("9")) return model;
-//    Resource visObservationQVC = ResourceFactory.createResource(observationNamespace + stationId + "/" + observationId + "/VISDistanceQVC/");
-//    model.add(visObservationQVC, SOSA.madeBySensor, station.getATMPVisibleSensor());
-//    model.add(station.getATMPVisibleSensor(), SOSA.madeObservation, visObservationQVC);
-//    model.add(visObservationQVC, SOSA.resultTime, ResourceFactory.createTypedLiteral(dateTime, XSDDatatype.XSDdateTime));
-//    model.add(visObservationQVC, SOSA.hasSimpleResult, ResourceFactory.createPlainLiteral(visQVC));
-//    model = SOSA.addVISQVCFOI(model, visObservationQVC);
-//    return model;
-//  }
-//
-//
-////=========TMP=======================================================================================================//
-//  private Model createTMP(Model model){
-//    if (temp.equals("9999")) return model;
-//    Resource tempObservation = ResourceFactory.createResource(observationNamespace + stationId + "/" + observationId + "/Temp/");
-//    model.add(tempObservation, SOSA.madeBySensor, station.getTemSensorResource());
-//    model.add(station.getTemSensorResource(), SOSA.madeObservation, tempObservation);
-//    model.add(tempObservation, SOSA.resultTime, ResourceFactory.createTypedLiteral(dateTime, XSDDatatype.XSDdateTime));
-//    model.add(tempObservation, SOSA.hasSimpleResult, ResourceFactory.createPlainLiteral(temp));
-//    model = SOSA.addAirTempFOI(model, tempObservation);
-//    return model;
-//  }
-//
-//  private Model createTMPQ(Model model){
-//    if (tempQ.equals("9")) return model;
-//    Resource tempQObservation = ResourceFactory.createResource(observationNamespace + stationId + "/" + observationId + "/TempQ/");
-//    model.add(tempQObservation, SOSA.madeBySensor, station.getTemSensorResource());
-//    model.add(station.getTemSensorResource(), SOSA.madeObservation, tempQObservation);
-//    model.add(tempQObservation, SOSA.resultTime, ResourceFactory.createTypedLiteral(dateTime, XSDDatatype.XSDdateTime));
-//    model.add(tempQObservation, SOSA.hasSimpleResult, ResourceFactory.createPlainLiteral(tempQ));
-//    model = SOSA.addAirTempQCFOI(model, tempQObservation);
-//    return model;
-//  }
-//
-//  private Model createTMPDew(Model model){
-//    if (tempDew.equals("9999")) return model;
-//    Resource tempObservation = ResourceFactory.createResource(observationNamespace + stationId + "/" + observationId + "/TempDew/");
-//    model.add(tempObservation, SOSA.madeBySensor, station.getTemSensorResource());
-//    model.add(station.getTemSensorResource(), SOSA.madeObservation, tempObservation);
-//    model.add(tempObservation, SOSA.resultTime, ResourceFactory.createTypedLiteral(dateTime, XSDDatatype.XSDdateTime));
-//    model.add(tempObservation, SOSA.hasSimpleResult, ResourceFactory.createPlainLiteral(tempDew));
-//    model = SOSA.addAirTempDewFOI(model, tempObservation);
-//    return model;
-//  }
-//
-//  private Model createTMPDewQ(Model model){
-//    if (tempDewQ.equals("9")) return model;
-//    Resource tempQObservation = ResourceFactory.createResource(observationNamespace + stationId + "/" + observationId + "/tempDewQ/");
-//    model.add(tempQObservation, SOSA.madeBySensor, station.getTemSensorResource());
-//    model.add(station.getTemSensorResource(), SOSA.madeObservation, tempQObservation);
-//    model.add(tempQObservation, SOSA.resultTime, ResourceFactory.createTypedLiteral(dateTime, XSDDatatype.XSDdateTime));
-//    model.add(tempQObservation, SOSA.hasSimpleResult, ResourceFactory.createPlainLiteral(tempDewQ));
-//    model = SOSA.addAirTempDewQCFOI(model, tempQObservation);
-//    return model;
-//  }
-//
-//  private Model createATMPressure(Model model){
-//    if (pressure.equals("99999")) return model;
-//    Resource tempObservation = ResourceFactory.createResource(observationNamespace + stationId + "/" + observationId + "/Pressure/");
-//    model.add(tempObservation, SOSA.madeBySensor, station.getATMPressureSensor());
-//    model.add(station.getATMPressureSensor(), SOSA.madeObservation, tempObservation);
-//    model.add(tempObservation, SOSA.resultTime, ResourceFactory.createTypedLiteral(dateTime, XSDDatatype.XSDdateTime));
-//    model.add(tempObservation, SOSA.hasSimpleResult, ResourceFactory.createPlainLiteral(pressure));
-//    model = SOSA.addATMPressureFOI(model, tempObservation);
-//    return model;
-//  }
-//
-//  private Model createATMPressureQ(Model model){
-//    if (pressureQ.equals("9")) return model;
-//    Resource tempQObservation = ResourceFactory.createResource(observationNamespace + stationId + "/" + observationId + "/PressureQ/");
-//    model.add(tempQObservation, SOSA.madeBySensor, station.getATMPressureSensor());
-//    model.add(station.getATMPressureSensor(), SOSA.madeObservation, tempQObservation);
-//    model.add(tempQObservation, SOSA.resultTime, ResourceFactory.createTypedLiteral(dateTime, XSDDatatype.XSDdateTime));
-//    model.add(tempQObservation, SOSA.hasSimpleResult, ResourceFactory.createPlainLiteral(pressureQ));
-//    model = SOSA.addATMPressureQCFOI(model, tempQObservation);
-//    return model;
-//  }
-//
-//
-//  public Model createModel(){
-//    Model model = ModelFactory.createDefaultModel();
-//          model = createWndDirectAngle(model);
-//          model = createWndDirectAngleQC(model);
-//          model = createWndDirectAngleTC(model);
-//          model = createWndSpeedRate(model);
-//          model = createWndSpeedRateQC(model);
-//          model = createTMP(model);
-//          model = createTMPQ(model);
-//          model = createTMPDew(model);
-//          model = createTMPDewQ(model);
-//          model = createATMPressure(model);
-//          model = createATMPressureQ(model);
-//          model = createVISDistance(model);
-//          model = createVISDistanceQC(model);
-//          model = createVISDistanceQVC(model);
-//          model = createVISDistanceVC(model);
-//
-//          return model;
-//  }
-//
-//  public void serialiseToNTriples(PrintStream printStream){
-//    serialise(printStream, "N-Triples");
-//  }
-//
-//  public void serialise(PrintStream printStream, String lang){
-//    Model model = createModel();
-//    model.write(printStream, lang);
-//  }
-//
-//  public String toString(){
-//    return stationId + " " + dateTime + " "
-//                     + wndDirectAngle + " "
-//                     + wndDirectAngleQC + " "
-//                     + wndDirectAngleTC + " "
-//                     + wndSpeed + " "
-//                     + wndSpeedQC + " -- "
-//                     + cigCHD + " "
-//                     + cigCQC + " "
-//                     + cigCDC + " "
-//                     + cigCAVOK + " -- "
-//                     + visDistance + " "
-//                     + visQC + " "
-//                     + visVC + " "
-//                     + visQVC + " -- "
-//                     + temp + " "
-//                     + tempQ + " "
-//                     + tempDew + " "
-//                     + tempDewQ + " -- "
-//                     + pressure + " "
-//                     + pressureQ + " " ;
-//  }
-//
-//
-//  //===============================================================================================//
-//
-//}
+package insight.dev.noaa2rdf;
+
+import com.sun.org.apache.xml.internal.utils.NameSpace;
+import insight.dev.noaa2rdf.vocabulary.Namespace;
+import insight.dev.noaa2rdf.vocabulary.SOSA;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.datatypes.xsd.XSDDateTime;
+import org.apache.jena.graph.Node;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.vocabulary.RDF;
+
+import java.io.PrintStream;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+
+/**
+ * insight.dev.noaa2rdf
+ * <p>
+ * TODO: Add class description
+ * <p>
+ * Author:  Anh Le-Tuan
+ * <p>
+ * Email:   anh.letuan@insight-centre.org
+ * <p>
+ * Date:  07/06/18.
+ */
+public class Observation {
+
+    private String date;
+    private String time;
+
+    private String wndDirect;
+    private String wndSpeed;
+    private String visDistance;
+    private String temp;
+    private String pressure;
+    private String skyCeiling;
+
+    private Station station;
+    private Sensor sensor;
+
+    Calendar calendar;
+
+
+
+    Observation() {
+        station = new Station();
+        calendar = new GregorianCalendar();
+    }
+
+
+
+    //================Wind Direction================================================================================================================//
+    private Model createWndDirectAngle(Model model) {
+        Sensor sensor = new Sensor(this.station, Sensor.SensorType.WINDDIRECTIONSENSOR);
+        if (wndDirect.equals("999")) return model;
+        Resource windObservation = ResourceFactory.createResource(Namespace.iot_observation + "/" + station.getStationId() + "/" + date + time + "/WindDirectAngle/");
+        model.add(windObservation, SOSA.madeBySensor, sensor.getSensorResource());
+        model.add(sensor.getSensorResource(), SOSA.madeObservation, windObservation);
+        model.add(windObservation, RDF.type, SOSA.Observation);
+        model.add(windObservation, SOSA.hasFeatureOfInterest, sensor.createFOI());
+        model.add(sensor.createFOI(), SOSA.hasFeatureOfInterest, windObservation);
+        model.add(windObservation, SOSA.hasSimpleResult, ResourceFactory.createPlainLiteral(this.wndDirect));
+        model.add(windObservation, SOSA.resultTime, ResourceFactory.createTypedLiteral(new XSDDateTime(dateTime())).toString(), XSDDatatype.XSDdateTime);
+        return model;
+    }
+
+
+
+    private Model createTMP(Model model) {
+        Sensor sensor = new Sensor(this.station, Sensor.SensorType.TEMPERATURESENSOR);
+        if (wndDirect.equals("999")) return model;
+        Resource tempObservation = ResourceFactory.createResource(Namespace.iot_observation + "/" + station.getStationId() + "/" + date + time + "/Temperature/");
+        model.add(tempObservation, SOSA.madeBySensor, sensor.getSensorResource());
+        model.add(sensor.getSensorResource(), SOSA.madeObservation, tempObservation);
+        model.add(tempObservation, RDF.type, SOSA.Observation);
+        model.add(tempObservation, SOSA.hasFeatureOfInterest, sensor.createFOI());
+        model.add(sensor.createFOI(), SOSA.hasFeatureOfInterest, tempObservation);
+        model.add(tempObservation, SOSA.hasSimpleResult, ResourceFactory.createPlainLiteral(this.temp));
+        model.add(tempObservation, SOSA.resultTime, ResourceFactory.createTypedLiteral(new XSDDateTime(dateTime())).toString(), XSDDatatype.XSDdateTime);
+        return model;
+    }
+
+
+
+    private Model createWndSpeedRate(Model model) {
+        Sensor sensor = new Sensor(this.station, Sensor.SensorType.WINDSPEEDSENSOR);
+        if (wndSpeed.equals("9999")) return model;
+        Resource windSpeedObservation = ResourceFactory.createResource(Namespace.iot_observation + "/" + station.getStationId() + "/" + date + time + "/WindSpeedRate/");
+        model.add(windSpeedObservation, SOSA.madeBySensor, sensor.getSensorResource());
+        model.add(sensor.getSensorResource(), SOSA.madeObservation, windSpeedObservation);
+        model.add(windSpeedObservation, RDF.type, SOSA.Observation);
+        model.add(windSpeedObservation, SOSA.hasFeatureOfInterest, sensor.createFOI());
+        model.add(sensor.createFOI(), SOSA.hasFeatureOfInterest, windSpeedObservation);
+        model.add(windSpeedObservation, SOSA.hasSimpleResult, ResourceFactory.createPlainLiteral(this.wndSpeed));
+        model.add(windSpeedObservation, SOSA.resultTime, ResourceFactory.createTypedLiteral(new XSDDateTime(dateTime())).toString(), XSDDatatype.XSDdateTime);
+        return model;
+    }
+
+
+
+    private Model createVISDistance(Model model) {
+        Sensor sensor = new Sensor(this.station, Sensor.SensorType.AIRCONDITIONSENSOR);
+        if (visDistance.equals("999999")) return model;
+        Resource visDistanceObservation = ResourceFactory.createResource(Namespace.iot_observation + "/" + station.getStationId() + "/" + date + time + "/VISDistance/");
+        model.add(visDistanceObservation, SOSA.madeBySensor, sensor.getSensorResource());
+        model.add(sensor.getSensorResource(), SOSA.madeObservation, visDistanceObservation);
+        model.add(visDistanceObservation, RDF.type, SOSA.Observation);
+        model.add(visDistanceObservation, SOSA.hasFeatureOfInterest, sensor.createFOI());
+        model.add(sensor.createFOI(), SOSA.hasFeatureOfInterest, visDistanceObservation);
+        model.add(visDistanceObservation, SOSA.hasSimpleResult, ResourceFactory.createPlainLiteral(this.visDistance));
+        model.add(visDistanceObservation, SOSA.resultTime, ResourceFactory.createTypedLiteral(new XSDDateTime(dateTime())).toString(), XSDDatatype.XSDdateTime);
+        return model;
+    }
+
+
+
+    private Model createATMPressure(Model model) {
+        Sensor sensor = new Sensor(this.station, Sensor.SensorType.ATMOSHPERESENSOR);
+        if (visDistance.equals("999999")) return model;
+        Resource atmObservation = ResourceFactory.createResource(Namespace.iot_observation + "/" + station.getStationId() + "/" + date + time + "/VISDistance/");
+        model.add(atmObservation, SOSA.madeBySensor, sensor.getSensorResource());
+        model.add(sensor.getSensorResource(), SOSA.madeObservation, atmObservation);
+        model.add(atmObservation, RDF.type, SOSA.Observation);
+        model.add(atmObservation, SOSA.hasFeatureOfInterest, sensor.createFOI());
+        model.add(sensor.createFOI(), SOSA.hasFeatureOfInterest, atmObservation);
+        model.add(atmObservation, SOSA.hasSimpleResult, ResourceFactory.createPlainLiteral(this.pressure));
+        model.add(atmObservation, SOSA.resultTime, ResourceFactory.createTypedLiteral(new XSDDateTime(dateTime())).toString(), XSDDatatype.XSDdateTime);
+        return model;
+    }
+
+
+
+    Model createModel(Model model) {
+        createWndDirectAngle(model);
+        createWndSpeedRate(model);
+        createTMP(model);
+        createATMPressure(model);
+        createVISDistance(model);
+        return model;
+    }
+
+
+
+    public String toString() {
+        return station.getStationId() + " "
+                + station.getLocation().getLat() + " "
+                + station.getLocation().getLon() + " "
+                + date + " "
+                + time + " "
+                + wndDirect + " "
+                + wndSpeed + " "
+                + skyCeiling + " "
+                + visDistance + " "
+                + temp + " "
+                + pressure;
+    }
+
+
+
+    void setWndSpeed(String wndSpeed) {
+        this.wndSpeed = wndSpeed;
+    }
+
+
+
+    void setVisDistance(String visDistance) {
+        this.visDistance = visDistance;
+    }
+
+
+
+    void setTemp(String temp) {
+        this.temp = temp;
+    }
+
+
+
+    void setPressure(String pressure) {
+        this.pressure = pressure;
+    }
+
+
+
+    void setStationId(String stationId) {
+        this.station.setStationId(stationId);
+    }
+
+
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+
+
+    void setTime(String time) {
+        this.time = time;
+    }
+
+
+
+    void setWndDirect(String wndDirect) {
+        this.wndDirect = wndDirect;
+    }
+
+
+
+    void setLat(String lat) {
+        this.station.setLat(lat);
+    }
+
+
+
+    void setLon(String lon) {
+        this.station.setLon(lon);
+    }
+
+
+
+    void setSkyCeiling(String skyCeiling) {
+        this.skyCeiling = skyCeiling;
+    }
+
+
+
+    Station getStation() {
+        return this.station;
+    }
+
+
+
+    private Calendar dateTime() {
+        int year = Integer.parseInt(this.date.substring(0, 4));
+        int month = Integer.parseInt(this.date.substring(4, 6));
+        int day = Integer.parseInt(this.date.substring(6, 8));
+        int hour = Integer.parseInt(this.time.substring(0, 2));
+        int min = Integer.parseInt(this.time.substring(2, 4));
+        this.calendar.set(year, month, day, hour, min, 0);
+        return calendar;
+    }
+
+}

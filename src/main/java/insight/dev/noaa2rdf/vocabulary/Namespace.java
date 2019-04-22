@@ -12,7 +12,7 @@ package insight.dev.noaa2rdf.vocabulary;
  * Date:  27/10/18.
  */
 public class Namespace {
-  public static final String iot =  "http://insight.org/iot/data/noaa/";
+  public static final String iot =  "http://iot.org/data/noaa/";
   public static final String iot_sensor  = iot + "sensor/";
   public static final String iot_station = iot + "weatherStation/";
   public static final String iot_observation = iot + "observation/";

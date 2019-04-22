@@ -41,7 +41,7 @@ public class Station2RDF
 
         String USAF    = csvRecord.get(0);
         String WBAN    = csvRecord.get(1);
-        station.setStationId(USAF+WBAN);
+        station.setStationId(USAF);
 
         String stationName  = csvRecord.get(2);
         if (stationName != null) station.setStationName(stationName);
@@ -54,8 +54,6 @@ public class Station2RDF
 
         String lon          = csvRecord.get(7);
         if (lon.length() != 0) station.setLon(lon);
-
-        //System.out.println(station.toString());
 
         station.viewStationInRDF();
 
