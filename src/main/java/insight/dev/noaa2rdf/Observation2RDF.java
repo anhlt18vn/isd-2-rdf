@@ -78,7 +78,7 @@ public class Observation2RDF {
         model = observation.getStation().createModel(model);
 
 
-        File fileOut = new File(outPath + "/010010-99999-2018.nt");
+        File fileOut = new File(outPath + file.getName() + ".nt");
         try {
             PrintStream printStream = new PrintStream(fileOut);
             model.write(printStream, "N-Triples");
