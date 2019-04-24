@@ -63,8 +63,8 @@ public class Observation {
         model.add(windObservation, RDF.type, SOSA.Observation);
         model.add(windObservation, SOSA.hasFeatureOfInterest, sensor.createFOI());
         model.add(sensor.createFOI(), SOSA.hasFeatureOfInterest, windObservation);
-        model.add(windObservation, SOSA.hasSimpleResult, ResourceFactory.createPlainLiteral(this.wndDirect));
-        model.add(windObservation, SOSA.resultTime, ResourceFactory.createTypedLiteral(new XSDDateTime(dateTime())).toString(), XSDDatatype.XSDdateTime);
+        model.add(windObservation, SOSA.hasSimpleResult, ResourceFactory.createTypedLiteral(this.wndDirect, XSDDatatype.XSDint));
+        model.add(windObservation, SOSA.resultTime, ResourceFactory.createTypedLiteral(dateTime(), XSDDatatype.XSDdateTime));
         return model;
     }
 
@@ -79,8 +79,8 @@ public class Observation {
         model.add(tempObservation, RDF.type, SOSA.Observation);
         model.add(tempObservation, SOSA.hasFeatureOfInterest, sensor.createFOI());
         model.add(sensor.createFOI(), SOSA.hasFeatureOfInterest, tempObservation);
-        model.add(tempObservation, SOSA.hasSimpleResult, ResourceFactory.createPlainLiteral(this.temp));
-        model.add(tempObservation, SOSA.resultTime, ResourceFactory.createTypedLiteral(new XSDDateTime(dateTime())).toString(), XSDDatatype.XSDdateTime);
+        model.add(tempObservation, SOSA.hasSimpleResult, ResourceFactory.createTypedLiteral(this.temp, XSDDatatype.XSDint));
+        model.add(tempObservation, SOSA.resultTime, ResourceFactory.createTypedLiteral(dateTime(), XSDDatatype.XSDdateTime));;
         return model;
     }
 
@@ -95,8 +95,8 @@ public class Observation {
         model.add(windSpeedObservation, RDF.type, SOSA.Observation);
         model.add(windSpeedObservation, SOSA.hasFeatureOfInterest, sensor.createFOI());
         model.add(sensor.createFOI(), SOSA.hasFeatureOfInterest, windSpeedObservation);
-        model.add(windSpeedObservation, SOSA.hasSimpleResult, ResourceFactory.createPlainLiteral(this.wndSpeed));
-        model.add(windSpeedObservation, SOSA.resultTime, ResourceFactory.createTypedLiteral(new XSDDateTime(dateTime())).toString(), XSDDatatype.XSDdateTime);
+        model.add(windSpeedObservation, SOSA.hasSimpleResult, ResourceFactory.createTypedLiteral(this.wndSpeed, XSDDatatype.XSDint));
+        model.add(windSpeedObservation, SOSA.resultTime, ResourceFactory.createTypedLiteral(dateTime(), XSDDatatype.XSDdateTime));
         return model;
     }
 
@@ -111,8 +111,8 @@ public class Observation {
         model.add(visDistanceObservation, RDF.type, SOSA.Observation);
         model.add(visDistanceObservation, SOSA.hasFeatureOfInterest, sensor.createFOI());
         model.add(sensor.createFOI(), SOSA.hasFeatureOfInterest, visDistanceObservation);
-        model.add(visDistanceObservation, SOSA.hasSimpleResult, ResourceFactory.createPlainLiteral(this.visDistance));
-        model.add(visDistanceObservation, SOSA.resultTime, ResourceFactory.createTypedLiteral(new XSDDateTime(dateTime())).toString(), XSDDatatype.XSDdateTime);
+        model.add(visDistanceObservation, SOSA.hasSimpleResult, ResourceFactory.createTypedLiteral(this.visDistance, XSDDatatype.XSDint));
+        model.add(visDistanceObservation, SOSA.resultTime, ResourceFactory.createTypedLiteral(dateTime(), XSDDatatype.XSDdateTime));
         return model;
     }
 
@@ -127,8 +127,8 @@ public class Observation {
         model.add(atmObservation, RDF.type, SOSA.Observation);
         model.add(atmObservation, SOSA.hasFeatureOfInterest, sensor.createFOI());
         model.add(sensor.createFOI(), SOSA.hasFeatureOfInterest, atmObservation);
-        model.add(atmObservation, SOSA.hasSimpleResult, ResourceFactory.createPlainLiteral(this.pressure));
-        model.add(atmObservation, SOSA.resultTime, ResourceFactory.createTypedLiteral(new XSDDateTime(dateTime())).toString(), XSDDatatype.XSDdateTime);
+        model.add(atmObservation, SOSA.hasSimpleResult, ResourceFactory.createTypedLiteral(this.pressure, XSDDatatype.XSDint));
+        model.add(atmObservation, SOSA.resultTime, ResourceFactory.createTypedLiteral(dateTime(), XSDDatatype.XSDdateTime));
         return model;
     }
 
@@ -233,14 +233,14 @@ public class Observation {
 
 
 
-    private Calendar dateTime() {
+    private String dateTime() {
         int year = Integer.parseInt(this.date.substring(0, 4));
         int month = Integer.parseInt(this.date.substring(4, 6));
         int day = Integer.parseInt(this.date.substring(6, 8));
         int hour = Integer.parseInt(this.time.substring(0, 2));
         int min = Integer.parseInt(this.time.substring(2, 4));
         this.calendar.set(year, month, day, hour, min, 0);
-        return calendar;
+        return new XSDDateTime(calendar).toString();
     }
 
 }
