@@ -8,6 +8,7 @@
     <packaging>pom</packaging>
 
     <properties>
+        <!--suppress UnresolvedMavenProperty -->
         <jar.outputDir>${HOME}/build/${project.groupId}.${project.artifactId}</jar.outputDir>
         <jar.fileName>${project.groupId}.${project.artifactId}.${project.version}</jar.fileName>
         <jar.libDir>libs/</jar.libDir>
@@ -32,5 +33,13 @@
         </plugins>
     </build>
 
+    <!-- https://mvnrepository.com/artifact/org.apache.jena/apache-jena -->
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>apache-jena</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+    </dependencies>
 
 </project>

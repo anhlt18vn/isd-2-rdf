@@ -20,12 +20,13 @@ public class Namespace {
   public static final String iot_location = iot + "location/";
   public static final String iot_point = iot + "point/";
   public static final String iot_foi = iot + "featureOfInterest/";
-  public static final String iot_class = iot + "class/";
+  public static final String iot_result = iot + "result/";
 
   public static final String wgs84 = "http://www.w3.org/2003/01/geo/wgs84_pos#";
   public static final String geo    ="http://www.geonames.org/ontology#";
   public static final String dul    = "http://www.loa-cnr.it/ontologies/DUL.owl#";
   public static final String sosa   = "http://www.w3.org/ns/sosa/";;
   public static final String ssn    = "http://www.w3.org/ns/ssn/";
-
+  public static final String qudt_1_1 = "http://qudt.org/1.1/schema/qudt#";
+  public static final String qudt_1_1_unit = "http://qudt.org/1.1/vocab/unit#";
 }
