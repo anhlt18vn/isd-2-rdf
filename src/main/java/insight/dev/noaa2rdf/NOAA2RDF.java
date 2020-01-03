@@ -4,8 +4,6 @@ import insight.dev.noaa2rdf.classes.Observation;
 import insight.dev.noaa2rdf.classes.Station;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 
 import java.io.*;
 import java.util.HashMap;
@@ -32,7 +30,7 @@ public class NOAA2RDF {
         //convert observation
         File rawDataFolder = new File(args[0] + "rawdata/");
         for (File file:rawDataFolder.listFiles()){
-            observation2RDF(file, args[0] + "observation");
+            observation2RDF(file, args[0] + "observation/");
         }
     }
 
