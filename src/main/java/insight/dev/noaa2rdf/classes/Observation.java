@@ -8,10 +8,14 @@ import insight.dev.noaa2rdf.vocabulary.SOSA;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.datatypes.xsd.XSDDateTime;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.vocabulary.RDF;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -88,23 +92,23 @@ public class Observation {
 
     public Model addToModel(Model model){
         if (!wndDirect.equals("999")) {
-            model = addResult(model, ObservableProperty.windDirection, wndDirect,wndDirect +  " degree angle", QUDT_1_1_Unit.DegreeAngle);
+            model = createObservation(model, ObservableProperty.windDirection, wndDirect,wndDirect +  " degree angle", QUDT_1_1_Unit.DegreeAngle);
         }
 
         if (!wndSpeed.equals("9999")) {
-            model = addResult(model, ObservableProperty.windSpeed, wndSpeed,wndSpeed +  " meters per second", QUDT_1_1_Unit.DegreeAngle);
+            model = createObservation(model, ObservableProperty.windSpeed, wndSpeed,wndSpeed +  " meters per second", QUDT_1_1_Unit.DegreeAngle);
         }
 
         if (!temp.equals("9999")) {
-            model = addResult(model, ObservableProperty.temperature, temp,temp +  " degree Celsius", QUDT_1_1_Unit.DegreeCelsisus);
+            model = createObservation(model, ObservableProperty.temperature, temp,temp +  " degree Celsius", QUDT_1_1_Unit.DegreeCelsisus);
         }
 
         if (!visDistance.equals("999999")) {
-            model = addResult(model, ObservableProperty.airCondition, visDistance,visDistance +  " meters", QUDT_1_1_Unit.Meter);
+            model = createObservation(model, ObservableProperty.airCondition, visDistance,visDistance +  " meters", QUDT_1_1_Unit.Meter);
         }
 
         if (!pressure.equals("99999")) {
-            model = addResult(model, ObservableProperty.atmosphere, pressure,pressure +  " Pascal", QUDT_1_1_Unit.Pascal);
+            model = createObservation(model, ObservableProperty.atmosphere, pressure,pressure +  " Pascal", QUDT_1_1_Unit.Pascal);
         }
 
         return model;
@@ -120,7 +124,7 @@ public class Observation {
         return new XSDDateTime(calendar).toString();
     }
 
-    private Model addResult(Model model, ObservableProperty observableProperty, String numericValue, String simpleValue, Resource unit) {
+    private Model createObservation(Model model, ObservableProperty observableProperty, String numericValue, String simpleValue, Resource unit) {
         if (wndDirect.equals("999")) return model;
 
         Resource observation = ResourceFactory.createResource(Namespace.iot_observation + station.getStationId() + "/" + observableProperty.getName() + "/" + date + time +"/" );
@@ -209,5 +213,19 @@ public class Observation {
 
     public void setStation(Station station) {
         this.station = station;
+    }
+
+    public void writeToFile(String path2Output) {
+        File file = new File((path2Output));
+        if (!file.exists()) file.mkdirs();
+        try {
+            PrintStream printStream = new PrintStream(new File(path2Output + this.station.getStationId() + this.date + this.time + ".nt"));
+            Model model = ModelFactory.createDefaultModel();
+            model = addToModel(model);
+            model.write(printStream, "N-Triples");
+            printStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

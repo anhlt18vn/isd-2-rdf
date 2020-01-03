@@ -1,6 +1,5 @@
 package insight.dev.noaa2rdf.classes;
 
-import insight.dev.noaa2rdf.classes.Station;
 import insight.dev.noaa2rdf.vocabulary.Geo;
 import insight.dev.noaa2rdf.vocabulary.Namespace;
 import insight.dev.noaa2rdf.vocabulary.SOSA;
@@ -8,11 +7,8 @@ import insight.dev.noaa2rdf.vocabulary.SSN;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.tdb.sys.Names;
 import org.apache.jena.vocabulary.RDF;
-import org.apache.jena.vocabulary.RDFS;
 
-import javax.naming.Name;
 
 /**
  * insight.dev.noaa2rdf

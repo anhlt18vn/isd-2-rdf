@@ -18,43 +18,39 @@ import java.util.HashMap;
  * PROJECT: noaa-2-rdf
  */
 public class NOAA2RDF {
-    public static String HOME = System.getProperty("user.home") + "/";
+    //public static String HOME = System.getProperty("user.home") + "/";
     private static HashMap<String, Station> stationHashMap;
 
     public static void main(String[] args){
         NOAA2RDF.stationHashMap = new HashMap<>();
-
-        args = new String[] {"/home/odslab/noaa/"};
 
         //convert station
         String path2stationInputFile = args[0] + "isd-history.csv";
         String path2stationOutputFolder = args[0] + "stations/";
         station2RDF(path2stationInputFile, path2stationOutputFolder);
 
-
         //convert observation
-        File rawDataFolder = new File(args[0] + "data/");
-
+        File rawDataFolder = new File(args[0] + "rawdata/");
         for (File file:rawDataFolder.listFiles()){
             observation2RDF(file, args[0] + "observation");
         }
     }
 
     public static void observation2RDF(File fileInput, String outputFolder){
-        Model model = ModelFactory.createDefaultModel();
-
-        int observationIdx = 0;
 
         try {
+            Observation observation = null;
             BufferedReader bufferedReader = new BufferedReader(new FileReader(fileInput));
             String observationAsString = bufferedReader.readLine();
 
             while (observationAsString != null){
-                Observation observation = Observation.readObservationFrom(observationAsString, NOAA2RDF.stationHashMap);
-                model = observation.addToModel(model);
-                model.write(System.out, "N-Triples");
-                break;
+                observation = Observation.readObservationFrom(observationAsString, NOAA2RDF.stationHashMap);
+                observation.writeToFile(outputFolder + "/" + fileInput.getName() + "/");
+                observationAsString = bufferedReader.readLine();
             }
+
+            if (observation != null)
+            observation.getStation().writeToFile(outputFolder);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -114,7 +110,5 @@ public class NOAA2RDF {
         } catch (IOException e){
             e.printStackTrace();
         }
-
-        System.out.println(i);
     }
 }

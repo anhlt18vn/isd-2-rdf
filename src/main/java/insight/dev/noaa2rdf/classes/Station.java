@@ -6,6 +6,8 @@ import insight.dev.noaa2rdf.vocabulary.SOSA;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.RDF;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -86,6 +88,19 @@ public class Station {
 
     public void serialiseToNTriples(PrintStream printStream) {
         serialise(printStream, "N-Triples");
+    }
+
+    public void writeToFile(String path2Output) {
+        File file = new File((path2Output));
+        if (!file.exists()) file.mkdirs();
+        try {
+            PrintStream printStream = new PrintStream(new File(path2Output + this.getStationId() + ".nt"));
+            Model model = addToModel();
+            model.write(printStream, "N-Triples");
+            printStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public void serialise(PrintStream printStream, String lang) {
