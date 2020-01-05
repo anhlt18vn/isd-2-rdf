@@ -46,10 +46,12 @@ public class Observation {
     private Station station;
     private Calendar calendar;
 
+
     public Observation(Station station) {
         this.station = station;
         this.calendar = new GregorianCalendar();
     }
+
 
     public static Observation readObservationFrom(String string, HashMap<String, Station> stationHashMap) {
         String stationId = string.substring(4, 10);
@@ -90,29 +92,16 @@ public class Observation {
         return observation;
     }
 
-    public Model addToModel(Model model){
-        if (!wndDirect.equals("999")) {
-            model = createObservation(model, ObservableProperty.windDirection, wndDirect,wndDirect +  " degree angle", QUDT_1_1_Unit.DegreeAngle);
-        }
 
-        if (!wndSpeed.equals("9999")) {
-            model = createObservation(model, ObservableProperty.windSpeed, wndSpeed,wndSpeed +  " meters per second", QUDT_1_1_Unit.DegreeAngle);
-        }
-
-        if (!temp.equals("9999")) {
-            model = createObservation(model, ObservableProperty.temperature, temp,temp +  " degree Celsius", QUDT_1_1_Unit.DegreeCelsisus);
-        }
-
-        if (!visDistance.equals("999999")) {
-            model = createObservation(model, ObservableProperty.airCondition, visDistance,visDistance +  " meters", QUDT_1_1_Unit.Meter);
-        }
-
-        if (!pressure.equals("99999")) {
-            model = createObservation(model, ObservableProperty.atmosphere, pressure,pressure +  " Pascal", QUDT_1_1_Unit.Pascal);
-        }
-
+    public Model addToModel(Model model) {
+        model = createObservation(model, ObservableProperty.windDirection, wndDirect, wndDirect + " degree angle", QUDT_1_1_Unit.DegreeAngle);
+        model = createObservation(model, ObservableProperty.windSpeed, wndSpeed, wndSpeed + " meters per second", QUDT_1_1_Unit.DegreeAngle);
+        model = createObservation(model, ObservableProperty.temperature, temp, temp + " degree Celsius", QUDT_1_1_Unit.DegreeCelsisus);
+        model = createObservation(model, ObservableProperty.airCondition, visDistance, visDistance + " meters", QUDT_1_1_Unit.Meter);
+        model = createObservation(model, ObservableProperty.atmosphere, pressure, pressure + " Pascal", QUDT_1_1_Unit.Pascal);
         return model;
     }
+
 
     private String dateTime() {
         int year = Integer.parseInt(this.date.substring(0, 4));
@@ -124,10 +113,11 @@ public class Observation {
         return new XSDDateTime(calendar).toString();
     }
 
+
     private Model createObservation(Model model, ObservableProperty observableProperty, String numericValue, String simpleValue, Resource unit) {
         if (wndDirect.equals("999")) return model;
 
-        Resource observation = ResourceFactory.createResource(Namespace.iot_observation + station.getStationId() + "/" + observableProperty.getName() + "/" + date + time +"/" );
+        Resource observation = ResourceFactory.createResource(Namespace.iot_observation + station.getStationId() + "/" + observableProperty.getName() + "/" + date + time + "/");
         model.add(observation, RDF.type, SOSA.Observation);
         model.add(observation, SOSA.ObservableProperty, observableProperty.getObservablePropertyResource());
 
@@ -140,7 +130,7 @@ public class Observation {
 
         model.add(observation, SOSA.hasSimpleResult, simpleValue);
 
-        Resource result = ResourceFactory.createResource(Namespace.iot_result + station.getStationId() + "/" + observableProperty.getName() + "/" + date + time +"/");
+        Resource result = ResourceFactory.createResource(Namespace.iot_result + station.getStationId() + "/" + observableProperty.getName() + "/" + date + time + "/");
         model.add(observation, SOSA.hasResult, result);
         model.add(result, RDF.type, SOSA.Result);
         model.add(result, RDF.type, QUDT_1_1.QuantityValue);
@@ -151,69 +141,86 @@ public class Observation {
         return model;
     }
 
+
     public String getDate() {
         return date;
     }
+
 
     public void setDate(String date) {
         this.date = date;
     }
 
+
     public String getTime() {
         return time;
     }
+
 
     public void setTime(String time) {
         this.time = time;
     }
 
+
     public String getWndDirect() {
         return wndDirect;
     }
+
 
     public void setWndDirect(String wndDirect) {
         this.wndDirect = wndDirect;
     }
 
+
     public String getWndSpeed() {
         return wndSpeed;
     }
+
 
     public void setWndSpeed(String wndSpeed) {
         this.wndSpeed = wndSpeed;
     }
 
+
     public String getVisDistance() {
         return visDistance;
     }
+
 
     public void setVisDistance(String visDistance) {
         this.visDistance = visDistance;
     }
 
+
     public String getTemp() {
         return temp;
     }
+
 
     public void setTemp(String temp) {
         this.temp = temp;
     }
 
+
     public String getPressure() {
         return pressure;
     }
+
 
     public void setPressure(String pressure) {
         this.pressure = pressure;
     }
 
+
     public Station getStation() {
         return station;
     }
 
+
     public void setStation(Station station) {
         this.station = station;
     }
+
 
     public void writeToFile(String path2Output) {
         File file = new File((path2Output));
