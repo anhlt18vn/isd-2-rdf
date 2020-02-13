@@ -32,7 +32,7 @@ public class SOSA {
   public static Property madeBySensor         = ResourceFactory.createProperty(Namespace.sosa + "madebySensor");
   public static Property madeObservation      = ResourceFactory.createProperty(Namespace.sosa + "madeObservation");
   public static Property resultTime           = ResourceFactory.createProperty(Namespace.sosa + "resultTime");
-  public static Property hasResult            = ResourceFactory.createProperty(Namespace.sosa + "hsaResult");
+  public static Property hasResult            = ResourceFactory.createProperty(Namespace.sosa + "hasResult");
   public static Property hasSimpleResult      = ResourceFactory.createProperty(Namespace.sosa + "hasSimpleResult");
   public static Property observes             = ResourceFactory.createProperty(Namespace.sosa + "observes");
   public static Property ObservableProperty   = ResourceFactory.createProperty(Namespace.sosa + "ObservableProperty");

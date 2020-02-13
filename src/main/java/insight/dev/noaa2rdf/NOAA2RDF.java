@@ -16,7 +16,6 @@ import java.util.HashMap;
  * PROJECT: noaa-2-rdf
  */
 public class NOAA2RDF {
-    //public static String HOME = System.getProperty("user.home") + "/";
     private static HashMap<String, Station> stationHashMap;
 
     public static void main(String[] args){
